@@ -25,9 +25,13 @@ const completedCount = document.getElementById("completedCount");
 // Filters
 
 const filterButtons = document.querySelectorAll(".filter-btn");
-console.log(assignmentForm);
-console.log(assignmentInput);
-console.log(courseInput);
-console.log(priorityInput);
-console.log(assignmentList);
-console.log(filterButtons);
+
+// Application State
+
+let assignments = [];
+
+let currentFilter = "all";
+
+console.log(assignments);
+console.log(currentFilter);
+console.log("Script is connected!");
