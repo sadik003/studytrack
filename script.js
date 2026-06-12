@@ -26,12 +26,16 @@ const completedCount = document.getElementById("completedCount");
 
 const filterButtons = document.querySelectorAll(".filter-btn");
 
-// Application State
-
 let assignments = [];
-
 let currentFilter = "all";
 
-console.log(assignments);
-console.log(currentFilter);
-console.log("Script is connected!");
+function render() {
+  assignmentList.innerHTML = "";
+
+  if (assignments.length === 0) {
+    emptyMsg.style.display = "block";
+  } else {
+    emptyMsg.style.display = "none";
+  }
+}
+render();
