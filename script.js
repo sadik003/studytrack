@@ -40,14 +40,25 @@ let currentFilter = "all";
 } */
 function render() {
   assignmentList.innerHTML = "";
+  let filteredAssignments = assignments;
+  if (currentFilter === "active") {
+    filteredAssignments = assignments.filter(function (assignment) {
+      return !assignment.completed;
+    });
+  }
+  if (currentFilter === "completed") {
+    filteredAssignments = assignments.filter(function (assignment) {
+      return assignment.completed;
+    });
+  }
 
-  if (assignments.length === 0) {
+  if (filteredAssignments.length === 0) {
     emptyMsg.style.display = "block";
   } else {
     emptyMsg.style.display = "none";
   }
 
-  assignments.forEach(function (assignment) {
+  filteredAssignments.forEach(function (assignment) {
     const li = document.createElement("li");
 
     /* li.innerHTML = `
@@ -156,4 +167,17 @@ assignmentForm.addEventListener("submit", function (event) {
   }
 
   addAssignment(title, course, priority);
+});
+filterButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    currentFilter = button.dataset.filter;
+
+    filterButtons.forEach(function (btn) {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    render();
+  });
 });
