@@ -128,7 +128,8 @@ function addAssignment(title, course, priority) {
   };
 
   assignments.unshift(assignment);
-  console.log(assignments);
+
+  saveAssignments();
 
   render();
 }
@@ -137,6 +138,8 @@ function deleteAssignment(id) {
   assignments = assignments.filter(function (assignment) {
     return assignment.id !== id;
   });
+
+  saveAssignments();
 
   render();
 }
@@ -149,6 +152,8 @@ function toggleComplete(id) {
   if (!assignment) return;
 
   assignment.completed = !assignment.completed;
+
+  saveAssignments();
 
   render();
 }
@@ -181,3 +186,19 @@ filterButtons.forEach(function (button) {
     render();
   });
 });
+
+function saveAssignments() {
+  localStorage.setItem("studytrackAssignments", JSON.stringify(assignments));
+}
+
+function loadAssignments() {
+  const storedAssignments = localStorage.getItem("studytrackAssignments");
+
+  if (storedAssignments) {
+    assignments = JSON.parse(storedAssignments);
+  }
+}
+
+loadAssignments();
+
+render();
