@@ -74,7 +74,8 @@ function render() {
     if (assignment.completed) {
       li.classList.add("completed");
     }
-    li.innerHTML = `
+
+    /*li.innerHTML = `
     <strong>${assignment.title}</strong><br>
     ${assignment.course}<br>
     Priority: ${assignment.priority}
@@ -87,6 +88,44 @@ function render() {
     <button class="delete-btn">
         Delete
     </button>
+`; */
+
+    let priorityClass = "";
+
+    if (assignment.priority === "High") {
+      priorityClass = "high-priority";
+    }
+
+    if (assignment.priority === "Medium") {
+      priorityClass = "medium-priority";
+    }
+
+    if (assignment.priority === "Low") {
+      priorityClass = "low-priority";
+    }
+
+    li.innerHTML = `
+    <div class="assignment-header">
+        <strong>${assignment.title}</strong>
+
+        <span class="${priorityClass}">
+            ${assignment.priority}
+        </span>
+    </div>
+
+    <p>${assignment.course}</p>
+
+    <div class="assignment-actions">
+
+        <button class="complete-btn">
+            ${assignment.completed ? "Undo" : "Complete"}
+        </button>
+
+        <button class="delete-btn">
+            Delete
+        </button>
+
+    </div>
 `;
 
     const deleteBtn = li.querySelector(".delete-btn");
@@ -130,6 +169,10 @@ function addAssignment(title, course, priority) {
   assignments.unshift(assignment);
 
   saveAssignments();
+
+  assignmentInput.value = "";
+  courseInput.value = "";
+  priorityInput.value = "High";
 
   render();
 }
