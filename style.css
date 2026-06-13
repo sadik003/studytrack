@@ -145,3 +145,16 @@ body {
   border-radius: 10px;
   border: 1px solid #e5e7eb;
 }
+
+.delete-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  opacity: 0.9;
+}

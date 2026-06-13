@@ -51,10 +51,21 @@ function render() {
     const li = document.createElement("li");
 
     li.innerHTML = `
-            <strong>${assignment.title}</strong><br>
-            ${assignment.course}<br>
-            Priority: ${assignment.priority}
-        `;
+    <strong>${assignment.title}</strong><br>
+    ${assignment.course}<br>
+    Priority: ${assignment.priority}
+    <br><br>
+
+    <button class="delete-btn">
+        Delete
+    </button>
+`;
+
+    const deleteBtn = li.querySelector(".delete-btn");
+
+    deleteBtn.addEventListener("click", function () {
+      deleteAssignment(assignment.id);
+    });
 
     assignmentList.appendChild(li);
   });
@@ -88,6 +99,15 @@ function addAssignment(title, course, priority) {
 
   render();
 }
+
+function deleteAssignment(id) {
+  assignments = assignments.filter(function (assignment) {
+    return assignment.id !== id;
+  });
+
+  render();
+}
+
 assignmentForm.addEventListener("submit", function (event) {
   event.preventDefault();
 
