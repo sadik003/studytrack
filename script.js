@@ -50,7 +50,7 @@ function render() {
   assignments.forEach(function (assignment) {
     const li = document.createElement("li");
 
-    li.innerHTML = `
+    /* li.innerHTML = `
     <strong>${assignment.title}</strong><br>
     ${assignment.course}<br>
     Priority: ${assignment.priority}
@@ -59,9 +59,31 @@ function render() {
     <button class="delete-btn">
         Delete
     </button>
+`;*/
+    if (assignment.completed) {
+      li.classList.add("completed");
+    }
+    li.innerHTML = `
+    <strong>${assignment.title}</strong><br>
+    ${assignment.course}<br>
+    Priority: ${assignment.priority}
+    <br><br>
+
+    <button class="complete-btn">
+        ${assignment.completed ? "Undo" : "Complete"}
+    </button>
+
+    <button class="delete-btn">
+        Delete
+    </button>
 `;
 
     const deleteBtn = li.querySelector(".delete-btn");
+    const completeBtn = li.querySelector(".complete-btn");
+
+    completeBtn.addEventListener("click", function () {
+      toggleComplete(assignment.id);
+    });
 
     deleteBtn.addEventListener("click", function () {
       deleteAssignment(assignment.id);
@@ -104,6 +126,18 @@ function deleteAssignment(id) {
   assignments = assignments.filter(function (assignment) {
     return assignment.id !== id;
   });
+
+  render();
+}
+
+function toggleComplete(id) {
+  const assignment = assignments.find(function (assignment) {
+    return assignment.id === id;
+  });
+
+  if (!assignment) return;
+
+  assignment.completed = !assignment.completed;
 
   render();
 }
