@@ -132,3 +132,16 @@ body {
     padding: 20px;
   }
 }
+#assignmentList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#assignmentList li {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}

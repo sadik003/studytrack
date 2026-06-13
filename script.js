@@ -29,6 +29,15 @@ const filterButtons = document.querySelectorAll(".filter-btn");
 let assignments = [];
 let currentFilter = "all";
 
+/*function render() {
+  assignmentList.innerHTML = "";
+
+  if (assignments.length === 0) {
+    emptyMsg.style.display = "block";
+  } else {
+    emptyMsg.style.display = "none";
+  }
+} */
 function render() {
   assignmentList.innerHTML = "";
 
@@ -37,5 +46,60 @@ function render() {
   } else {
     emptyMsg.style.display = "none";
   }
+
+  assignments.forEach(function (assignment) {
+    const li = document.createElement("li");
+
+    li.innerHTML = `
+            <strong>${assignment.title}</strong><br>
+            ${assignment.course}<br>
+            Priority: ${assignment.priority}
+        `;
+
+    assignmentList.appendChild(li);
+  });
+  totalCount.textContent = assignments.length;
+
+  pendingCount.textContent = assignments.filter(function (assignment) {
+    return !assignment.completed;
+  }).length;
+
+  completedCount.textContent = assignments.filter(function (assignment) {
+    return assignment.completed;
+  }).length;
 }
 render();
+
+function addAssignment(title, course, priority) {
+  const assignment = {
+    id: Date.now().toString(),
+
+    title: title,
+
+    course: course,
+
+    priority: priority,
+
+    completed: false,
+  };
+
+  assignments.unshift(assignment);
+  console.log(assignments);
+
+  render();
+}
+assignmentForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const title = assignmentInput.value.trim();
+
+  const course = courseInput.value.trim();
+
+  const priority = priorityInput.value;
+
+  if (title === "" || course === "") {
+    return;
+  }
+
+  addAssignment(title, course, priority);
+});
