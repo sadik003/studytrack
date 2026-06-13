@@ -3,15 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>StudyTrack</title>
+
     <link rel="stylesheet" href="style.css" />
   </head>
+
   <body>
     <div class="app">
+      <!-- Header -->
+
       <header class="app-header">
         <h1>StudyTrack</h1>
+
         <p>Plan. Study. Achieve.</p>
       </header>
+
+      <!-- Statistics Dashboard -->
 
       <section class="stats-section">
         <div class="stat-card">
@@ -28,25 +36,44 @@
           <h3>Completed</h3>
           <span id="completedCount">0</span>
         </div>
+
+        <div class="stat-card">
+          <h3>Completion Rate</h3>
+          <span id="completionRate">0%</span>
+        </div>
       </section>
+
+      <!-- Assignment Form -->
 
       <form id="assignmentForm">
         <input
           type="text"
           id="assignmentInput"
-          placeholder="Assignment title"
+          placeholder="Assignment Title"
+          required
         />
 
-        <input type="text" id="courseInput" placeholder="Course code" />
+        <input
+          type="text"
+          id="courseInput"
+          placeholder="Course Code"
+          required
+        />
+
+        <input type="date" id="dueDate" />
 
         <select id="priorityInput">
           <option value="High">High Priority</option>
+
           <option value="Medium">Medium Priority</option>
+
           <option value="Low">Low Priority</option>
         </select>
 
         <button type="submit">Add Assignment</button>
       </form>
+
+      <!-- Filter Buttons -->
 
       <div class="filter-bar">
         <button type="button" class="filter-btn active" data-filter="all">
@@ -62,7 +89,11 @@
         </button>
       </div>
 
+      <!-- Assignment List -->
+
       <ul id="assignmentList"></ul>
+
+      <!-- Empty State -->
 
       <p id="emptyMsg">No assignments added yet.</p>
     </div>

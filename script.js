@@ -8,6 +8,8 @@ const courseInput = document.getElementById("courseInput");
 
 const priorityInput = document.getElementById("priorityInput");
 
+const dueDateInput = document.getElementById("dueDate");
+
 // Assignment List
 
 const assignmentList = document.getElementById("assignmentList");
@@ -22,30 +24,31 @@ const pendingCount = document.getElementById("pendingCount");
 
 const completedCount = document.getElementById("completedCount");
 
+const completionRate = document.getElementById("completionRate");
+
 // Filters
 
 const filterButtons = document.querySelectorAll(".filter-btn");
 
+// App State
+
 let assignments = [];
+
 let currentFilter = "all";
 
-/*function render() {
-  assignmentList.innerHTML = "";
+// Render Function
 
-  if (assignments.length === 0) {
-    emptyMsg.style.display = "block";
-  } else {
-    emptyMsg.style.display = "none";
-  }
-} */
 function render() {
   assignmentList.innerHTML = "";
+
   let filteredAssignments = assignments;
+
   if (currentFilter === "active") {
     filteredAssignments = assignments.filter(function (assignment) {
       return !assignment.completed;
     });
   }
+
   if (currentFilter === "completed") {
     filteredAssignments = assignments.filter(function (assignment) {
       return assignment.completed;
@@ -61,34 +64,9 @@ function render() {
   filteredAssignments.forEach(function (assignment) {
     const li = document.createElement("li");
 
-    /* li.innerHTML = `
-    <strong>${assignment.title}</strong><br>
-    ${assignment.course}<br>
-    Priority: ${assignment.priority}
-    <br><br>
-
-    <button class="delete-btn">
-        Delete
-    </button>
-`;*/
     if (assignment.completed) {
       li.classList.add("completed");
     }
-
-    /*li.innerHTML = `
-    <strong>${assignment.title}</strong><br>
-    ${assignment.course}<br>
-    Priority: ${assignment.priority}
-    <br><br>
-
-    <button class="complete-btn">
-        ${assignment.completed ? "Undo" : "Complete"}
-    </button>
-
-    <button class="delete-btn">
-        Delete
-    </button>
-`; */
 
     let priorityClass = "";
 
@@ -104,32 +82,49 @@ function render() {
       priorityClass = "low-priority";
     }
 
+    const today = new Date().toISOString().split("T")[0];
+
+    const isOverdue =
+      assignment.dueDate && assignment.dueDate < today && !assignment.completed;
+
+    if (isOverdue) {
+      li.classList.add("overdue");
+    }
+
     li.innerHTML = `
-    <div class="assignment-header">
-        <strong>${assignment.title}</strong>
+            <div class="assignment-header">
 
-        <span class="${priorityClass}">
-            ${assignment.priority}
-        </span>
-    </div>
+                <strong>${assignment.title}</strong>
 
-    <p>${assignment.course}</p>
+                <span class="${priorityClass}">
+                    ${assignment.priority}
+                </span>
 
-    <div class="assignment-actions">
+            </div>
 
-        <button class="complete-btn">
-            ${assignment.completed ? "Undo" : "Complete"}
-        </button>
+            <p><strong>Course:</strong> ${assignment.course}</p>
 
-        <button class="delete-btn">
-            Delete
-        </button>
+            <p>
+                <strong>Due:</strong>
+                ${assignment.dueDate ? assignment.dueDate : "Not Set"}
+            </p>
 
-    </div>
-`;
+            <div class="assignment-actions">
+
+                <button class="complete-btn">
+                    ${assignment.completed ? "Undo" : "Complete"}
+                </button>
+
+                <button class="delete-btn">
+                    Delete
+                </button>
+
+            </div>
+        `;
+
+    const completeBtn = li.querySelector(".complete-btn");
 
     const deleteBtn = li.querySelector(".delete-btn");
-    const completeBtn = li.querySelector(".complete-btn");
 
     completeBtn.addEventListener("click", function () {
       toggleComplete(assignment.id);
@@ -141,6 +136,9 @@ function render() {
 
     assignmentList.appendChild(li);
   });
+
+  // Statistics
+
   totalCount.textContent = assignments.length;
 
   pendingCount.textContent = assignments.filter(function (assignment) {
@@ -150,10 +148,24 @@ function render() {
   completedCount.textContent = assignments.filter(function (assignment) {
     return assignment.completed;
   }).length;
-}
-render();
 
-function addAssignment(title, course, priority) {
+  const rate =
+    assignments.length === 0
+      ? 0
+      : Math.round(
+          (assignments.filter(function (assignment) {
+            return assignment.completed;
+          }).length /
+            assignments.length) *
+            100,
+        );
+
+  completionRate.textContent = rate + "%";
+}
+
+// Add Assignment
+
+function addAssignment(title, course, priority, dueDate) {
   const assignment = {
     id: Date.now().toString(),
 
@@ -162,6 +174,8 @@ function addAssignment(title, course, priority) {
     course: course,
 
     priority: priority,
+
+    dueDate: dueDate,
 
     completed: false,
   };
@@ -172,10 +186,13 @@ function addAssignment(title, course, priority) {
 
   assignmentInput.value = "";
   courseInput.value = "";
+  dueDateInput.value = "";
   priorityInput.value = "High";
 
   render();
 }
+
+// Delete Assignment
 
 function deleteAssignment(id) {
   assignments = assignments.filter(function (assignment) {
@@ -186,6 +203,8 @@ function deleteAssignment(id) {
 
   render();
 }
+
+// Toggle Complete
 
 function toggleComplete(id) {
   const assignment = assignments.find(function (assignment) {
@@ -201,6 +220,8 @@ function toggleComplete(id) {
   render();
 }
 
+// Form Submission
+
 assignmentForm.addEventListener("submit", function (event) {
   event.preventDefault();
 
@@ -210,12 +231,17 @@ assignmentForm.addEventListener("submit", function (event) {
 
   const priority = priorityInput.value;
 
+  const dueDate = dueDateInput.value;
+
   if (title === "" || course === "") {
     return;
   }
 
-  addAssignment(title, course, priority);
+  addAssignment(title, course, priority, dueDate);
 });
+
+// Filters
+
 filterButtons.forEach(function (button) {
   button.addEventListener("click", function () {
     currentFilter = button.dataset.filter;
@@ -230,6 +256,8 @@ filterButtons.forEach(function (button) {
   });
 });
 
+// localStorage
+
 function saveAssignments() {
   localStorage.setItem("studytrackAssignments", JSON.stringify(assignments));
 }
@@ -241,6 +269,8 @@ function loadAssignments() {
     assignments = JSON.parse(storedAssignments);
   }
 }
+
+// App Initialization
 
 loadAssignments();
 
